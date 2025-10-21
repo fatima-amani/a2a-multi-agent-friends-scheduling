@@ -218,7 +218,7 @@ def _get_initialised_host_agent_sync():
     async def _async_main():
 
         friend_agent_urls = [
-            "http://localhost:10002",  # Karley's Agent
+            "http://localhost:10002",  # Apeksha Agent
             "http://localhost:10003",  # Nate's Agent
             "http://localhost:10004",  # Kaitlynn's Agent
         ]
