@@ -146,15 +146,15 @@ class HostAgent():
                     event.content.parts[0].text
                 ):
                     response = "\n".join(
-                        part.text for part in event.content.parts if part.text
+                        [part.text for part in event.content.parts if part.text]
                     )
                 yield {
-                    "is_task_completed": True,
+                    "is_task_complete": True,
                     "content": response,
                 }
             else:
                 yield {
-                    "is_task_completed": False,
+                    "is_task_complete": False,
                     "updates": "Host Agent is thinking..."
                 }
     
@@ -209,7 +209,7 @@ class HostAgent():
         if json_content.get("result",{}).get("artifacts"):
             for artifact in json_content["result"]["artifacts"]:
                 if artifact.get("parts"):
-                    resp.extend(artifact.get("parts",""))
+                    resp.extend(artifact["parts"])
 
         return resp
     
@@ -219,8 +219,8 @@ def _get_initialised_host_agent_sync():
 
         friend_agent_urls = [
             "http://localhost:10002",  # Apeksha Agent
-            "http://localhost:10003",  # Nate's Agent
-            "http://localhost:10004",  # Kaitlynn's Agent
+            "http://localhost:10003",  # Alaka's Agent
+            "http://localhost:10004",  # Aamna's Agent
         ]
 
         print("initializing host agent")
