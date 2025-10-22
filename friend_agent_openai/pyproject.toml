@@ -1,7 +1,7 @@
 [project]
 name = "friend-agent-openai"
 version = "0.1.0"
-description = "Add your description here"
+description = "A friend agent that uses the OpenAI Assistants API to schedule pickleball games."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

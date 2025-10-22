@@ -1,4 +1,4 @@
-# Friend Scheduling Agent - ADK
+# Friend Agent (Google ADK)
 
 This agent is part of the Friend Scheduling project. It is built using the Agent Development Kit (ADK).
 
@@ -37,7 +37,7 @@ This agent is an ADK agent. Its endpoint is managed by the ADK runtime and can b
 
 4.  **Run the agent:**
     ```bash
-    uv run
+    uv run .
     ```
 
 5.  **Access the Agent Card:**

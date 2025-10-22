@@ -1,7 +1,7 @@
 [project]
 name = "host-agent"
 version = "0.1.0"
-description = "Add your description here"
+description = "The central coordinator for the Friend Scheduling project."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

@@ -1,11 +1,12 @@
-# Friend Scheduling Multi-Agent System
+# A2A PickleBall Scheduling Multi-Agent System
 
-This project implements a multi-agent system for scheduling activities among friends. It consists of a host agent and three friend agents, each built with a different technology.
+This project implements a multi-agent system using A2A Protocol for scheduling activities among friends. It uses a2a to communicate between different agents made using Google ADK, OpenAI agents, CrewAI, and LangGraph. The project consists of a host client agent and four friend agents, each simulating one of the developer's friends.
 
 -   **Host Agent**: The central coordinator.
 -   **Friend Agent (ADK)**: A friend agent built with the Agent Development Kit.
 -   **Friend Agent (CrewAI)**: A friend agent built with CrewAI.
 -   **Friend Agent (LangGraph)**: A friend agent built with LangGraph.
+-   **Friend Agent (OpenAI)**: A friend agent built with the OpenAI Agents.
 
 ## Repository
 
@@ -43,7 +44,7 @@ In a new terminal window:
 cd friend_agent_adk
 uv init
 uv sync
-uv run
+uv run .
 ```
 
 ### 4. Run the Friend Agent (CrewAI)
@@ -54,7 +55,7 @@ In a new terminal window:
 cd friend_agent_crewai
 uv init
 uv sync
-uv run
+uv run .
 ```
 
 ### 5. Run the Friend Agent (LangGraph)
@@ -65,5 +66,16 @@ In a new terminal window:
 cd friend_agent_langgraph
 uv init
 uv sync
-uv run python -m app
+uv run .
+```
+
+### 6. Run the Friend Agent (OpenAI)
+
+In a new terminal window:
+
+```bash
+cd friend_agent_openai
+uv init
+uv sync
+uv run .
 ```

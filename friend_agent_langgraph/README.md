@@ -1,4 +1,4 @@
-# Friend Scheduling Agent - LangGraph
+# Friend Agent (LangGraph)
 
 This agent is part of the Friend Scheduling project. It is built using LangGraph.
 

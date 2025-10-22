@@ -1,4 +1,4 @@
-# Friend Scheduling Agent - CrewAI
+# Friend Agent (CrewAI)
 
 This agent is part of the Friend Scheduling project. It is built using CrewAI.
 
@@ -39,7 +39,7 @@ This agent is a CrewAI agent. It exposes a custom endpoint that the host agent c
 
 4.  **Run the agent:**
     ```bash
-    uv run
+    uv run .
     ```
 
 5.  **Access the Agent Card:**
