@@ -1,0 +1,10 @@
+[project]
+name = "friend-agent-openai"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "a2a-sdk>=0.2.5",
+    "openai-agents>=0.4.1",
+]
