@@ -14,6 +14,7 @@ from a2a.types import (
     SendMessageResponse,
     SendMessageSuccessResponse,
     Task,
+    TaskState
 )
 from dotenv import load_dotenv
 from google.adk import Agent
@@ -159,21 +160,22 @@ class HostAgent():
                 }
     
     async def send_message(
-            self, agent_name: str, task: str, tool_context: ToolContext
+        self, agent_name: str, task: str, tool_context: ToolContext
     ):
         if agent_name not in self.remote_agent_connections:
             raise ValueError(f"Agent '{agent_name}' not found.")
 
-        client = self.remote_agent_connections[agent_name]
+        # This is your RemoteAgentConnections object
+        connection = self.remote_agent_connections[agent_name]
 
-        if not client:
+        if not connection:
             raise ValueError(f"Client not found for agent '{agent_name}'.")
         
         state = tool_context.state
-        task_id  = state.get("task_id", str(uuid.uuid4()))
         context_id = state.get("context_id", str(uuid.uuid4()))
         message_id = str(uuid.uuid4())
 
+        # FIX 1: 'taskId' is removed. The server will create it.
         payload = {
             "message": {
                 "role" : "user",
@@ -185,7 +187,7 @@ class HostAgent():
                 ],
                 "messageId": message_id,
                 "contextId": context_id,
-                "taskId": task_id,
+                # "taskId": task_id,  <-- Correctly commented out/removed
             },
         }
 
@@ -194,23 +196,61 @@ class HostAgent():
             params=MessageSendParams.model_validate(payload)
         )
 
-        send_response: SendMessageResponse = await client.send_message(message_request)
+        # 1. Send the message and get the initial task response
+        try:
+            send_response: SendMessageResponse = await connection.send_message(message_request)
+        except Exception as e:
+            print(f"Error sending message to {agent_name}: {e}")
+            return f"Error: Failed to send message to {agent_name}."
 
-        print(f"Send message response: {send_response}")
+        print(f"Initial send message response from {agent_name}: {send_response}")
 
         if not isinstance(send_response.root, SendMessageSuccessResponse) or not isinstance(send_response.root.result, Task):
-            print(f"Received a non success or non task response: {send_response}")
-            return
+            print(f"Received a non-success or non-task response: {send_response}")
+            return f"Error: Did not receive a valid task from {agent_name}. Response: {send_response}"
         
-        response_content = send_response.root.model_dump_json(exclude_none=True)
-        json_content = json.loads(response_content)
+        # 2. Get the Task object from the initial response
+        current_task: Task = send_response.root.result
+        
+        # 3. Start POLLING the task until it's finished
+        print(f"Task {current_task.id} started. Polling for completion...")
+        
+        # FIX 2: Check status.state against the TaskState enum
+        while current_task.status.state not in (
+            TaskState.completed,
+            TaskState.failed,
+            TaskState.canceled,
+        ):
+            await asyncio.sleep(1) # Wait for 1 second before checking again
+            try:
+                # Use the A2AClient from your connection object to get the task status
+                current_task = await connection.agent_client.get_task(
+                    task_id=current_task.id
+                )
+                print(f"Task {current_task.id} status: {current_task.status.state.value}")
+            except Exception as e:
+                print(f"Error while polling task {current_task.id}: {e}")
+                return f"Error: Failed to get task status from {agent_name}."
 
+        # 4. Once the loop breaks, the task is terminal. Check if it succeeded.
+        if current_task.status.state != TaskState.completed:
+            return f"Error: Task for {agent_name} failed with status {current_task.status.state.value}."
+
+        # 5. Now that the task is completed, parse the final artifacts
+        print(f"Task {current_task.id} completed. Parsing artifacts...")
+        
+        # FIX 3: Correctly parse the part.root.text from the artifacts
         resp = []
-        if json_content.get("result",{}).get("artifacts"):
-            for artifact in json_content["result"]["artifacts"]:
-                if artifact.get("parts"):
-                    resp.extend(artifact["parts"])
+        if current_task.artifacts:
+            for artifact in current_task.artifacts:
+                if artifact.parts:
+                    for part in artifact.parts:
+                        # Extract the text from the part's root
+                        if hasattr(part, 'root') and hasattr(part.root, 'text'):
+                            resp.append(part.root.text)
 
+        # 6. Return the final result to the LLM
+        print(f"Returning final response from {agent_name}: {resp}")
         return resp
     
 def _get_initialised_host_agent_sync():

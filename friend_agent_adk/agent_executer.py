@@ -45,13 +45,13 @@ class ApekshaAgentExecuter(AgentExecutor):
                     event.content.parts if event.content and event.content.parts else []
                 )
                 logger.debug(f"Yielding final responseL {parts}")
-                task_updater.add_artifact(parts)
-                task_updater.complete()
+                await task_updater.add_artifact(parts)
+                await task_updater.complete()
                 break
             
             if not event.get_function_calls():
                 logger.debug("Yielding update response")
-                task_updater.update_status(
+                await task_updater.update_status(
                     TaskState.working,
                     message=task_updater.new_agent_message(
                         convert_genai_parts_to_a2a(
@@ -72,8 +72,8 @@ class ApekshaAgentExecuter(AgentExecutor):
         updater = TaskUpdater(event_queue, context.task_id, context.context_id)
 
         if not context.current_task:
-            updater.submit
-        updater.start_work()
+            await updater.submit()
+        await updater.start_work()
         await self._process_request(
             types.UserContent(
                 parts=convert_a2a_parts_to_genai(context.message.parts),

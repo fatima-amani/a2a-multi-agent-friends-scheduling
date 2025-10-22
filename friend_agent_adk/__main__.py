@@ -58,7 +58,7 @@ def main():
             app_name=agent_card.name,
             agent=adk_agent,
             artifact_service=InMemoryArtifactService(),
-            session_service=InMemorySessionService,
+            session_service=InMemorySessionService(),
             memory_service=InMemoryMemoryService()
         )
 
