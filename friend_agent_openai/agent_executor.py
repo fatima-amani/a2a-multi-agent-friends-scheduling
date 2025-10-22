@@ -47,7 +47,7 @@ class DarshanaAgentExecutor(AgentExecutor):
         except Exception as e:
             print(f"Error invoking agent: {e}")
             raise ServerError(error=InternalError()) from e
-        parts = [Part(root=TextPart(text=result))]
+        parts = [Part(root=TextPart(text=result.final_output))]
 
         await updater.add_artifact(parts)
         await updater.complete()

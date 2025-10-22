@@ -258,9 +258,11 @@ def _get_initialised_host_agent_sync():
     async def _async_main():
 
         friend_agent_urls = [
-            "http://localhost:10002",  # Apeksha Agent
-            "http://localhost:10003",  # Alaka's Agent
-            "http://localhost:10004",  # Aamna's Agent
+            "http://localhost:10002",  # Adk Agent
+            "http://localhost:10003",  # Crew AI Agent
+            "http://localhost:10004",  # Langgraph Agent
+            "http://localhost:10005",  # OpenAI Agent
+
         ]
 
         print("initializing host agent")
